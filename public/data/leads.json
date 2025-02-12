@@ -1,0 +1,165 @@
+[
+    {
+        "id": 1,
+        "name": "John Smith",
+        "company": "Acme Inc",
+        "contactInfo": {
+            "email": "john.smith@acme.com",
+            "phone": "+1-202-555-0147"
+        },
+        "leadScore": 78,
+        "status": "Warm",
+        "assignedTo": "Alice Green",
+        "industry": "Manufacturing",
+        "location": "New York, USA",
+        "badges": [
+            "Enterprise",
+            "High-Potential"
+        ],
+        "profilePicture": "https://example.com/profiles/john_smith.jpg",
+        "interactions": [
+            {
+                "interactionId": 1001,
+                "date": "2025-02-01",
+                "type": "Call",
+                "notes": "Discussed project scope. Positive response.",
+                "salesRep": "Alice Green"
+            },
+            {
+                "interactionId": 1002,
+                "date": "2025-02-08",
+                "type": "Email",
+                "notes": "Sent pricing details and proposal.",
+                "salesRep": "Alice Green"
+            }
+        ],
+        "createdAt": "2025-01-15T09:00:00Z",
+        "updatedAt": "2025-02-08T17:30:00Z"
+    },
+    {
+        "id": 2,
+        "name": "Samantha Lee",
+        "company": "Global Tech",
+        "contactInfo": {
+            "email": "samantha.lee@globaltech.io",
+            "phone": "+44-20-7183-8750"
+        },
+        "leadScore": 92,
+        "status": "Hot",
+        "assignedTo": "Bob Carter",
+        "industry": "Technology",
+        "location": "London, UK",
+        "badges": [
+            "Tech",
+            "VIP"
+        ],
+        "profilePicture": "https://example.com/profiles/samantha_lee.png",
+        "interactions": [
+            {
+                "interactionId": 1010,
+                "date": "2025-02-05",
+                "type": "Meeting",
+                "notes": "Product demo and Q&A session.",
+                "salesRep": "Bob Carter"
+            }
+        ],
+        "createdAt": "2025-01-20T11:15:00Z",
+        "updatedAt": "2025-02-10T08:45:00Z"
+    },
+    {
+        "id": 3,
+        "name": "Raj Patel",
+        "company": "Skyline Solutions",
+        "contactInfo": {
+            "email": "raj.patel@skyline.com",
+            "phone": "+91-98100-12345"
+        },
+        "leadScore": 64,
+        "status": "Cold",
+        "assignedTo": "Alice Green",
+        "industry": "Consulting",
+        "location": "Mumbai, India",
+        "badges": [
+            "Follow-Up"
+        ],
+        "profilePicture": null,
+        "interactions": [
+            {
+                "interactionId": 1020,
+                "date": "2025-02-02",
+                "type": "Email",
+                "notes": "Introductory email, no response yet.",
+                "salesRep": "Alice Green"
+            }
+        ],
+        "createdAt": "2024-12-30T10:00:00Z",
+        "updatedAt": "2025-02-02T14:00:00Z"
+    },
+    {
+        "id": 4,
+        "name": "Maria Fernandez",
+        "company": "Nova Retail",
+        "contactInfo": {
+            "email": "maria.fernandez@novaretail.co",
+            "phone": "+34-913-123-456"
+        },
+        "leadScore": 85,
+        "status": "Warm",
+        "assignedTo": "Charlie Kim",
+        "industry": "Retail",
+        "location": "Madrid, Spain",
+        "badges": [
+            "Key Account",
+            "High-Potential"
+        ],
+        "profilePicture": "https://example.com/profiles/maria_fernandez.jpg",
+        "interactions": [
+            {
+                "interactionId": 1030,
+                "date": "2025-02-03",
+                "type": "Call",
+                "notes": "Interested in bulk purchase solutions.",
+                "salesRep": "Charlie Kim"
+            },
+            {
+                "interactionId": 1031,
+                "date": "2025-02-09",
+                "type": "Email",
+                "notes": "Requested demo follow-up.",
+                "salesRep": "Charlie Kim"
+            }
+        ],
+        "createdAt": "2025-01-10T16:00:00Z",
+        "updatedAt": "2025-02-09T12:30:00Z"
+    },
+    {
+        "id": 5,
+        "name": "Erik Johnson",
+        "company": "Urban Innovations",
+        "contactInfo": {
+            "email": "erik.j@urbaninnovations.us",
+            "phone": "+1-303-555-0199"
+        },
+        "leadScore": 70,
+        "status": "Warm",
+        "assignedTo": "Bob Carter",
+        "industry": "Real Estate",
+        "location": "Denver, USA",
+        "badges": [
+            "PotentialPartner",
+            "Renewable"
+        ],
+        "profilePicture": "https://example.com/profiles/erik_johnson.png",
+        "interactions": [
+            {
+                "interactionId": 1040,
+                "date": "2025-02-07",
+                "type": "Email",
+                "notes": "Shared portfolio of previous collaborations.",
+                "salesRep": "Bob Carter"
+            }
+        ],
+        "createdAt": "2025-01-25T14:30:00Z",
+        "updatedAt": "2025-02-07T09:15:00Z"
+    }
+]
