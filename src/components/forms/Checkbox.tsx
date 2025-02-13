@@ -6,7 +6,7 @@ interface CheckboxProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({
+const Checkbox: React.FC<CheckboxProps> = ({
     label,
     checked,
     onChange,
@@ -23,3 +23,4 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         </div>
     );
 };
+export default Checkbox;

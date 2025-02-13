@@ -16,7 +16,7 @@
             "Enterprise",
             "High-Potential"
         ],
-        "profilePicture": "https://example.com/profiles/john_smith.jpg",
+        "profilePicture": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
         "interactions": [
             {
                 "interactionId": 1001,
@@ -30,6 +30,13 @@
                 "date": "2025-02-08",
                 "type": "Email",
                 "notes": "Sent pricing details and proposal.",
+                "salesRep": "Alice Green"
+            },
+            {
+                "interactionId": 1003,
+                "date": "2025-02-12",
+                "type": "Call",
+                "notes": "Follow-up on the proposal, awaiting feedback.",
                 "salesRep": "Alice Green"
             }
         ],
@@ -53,7 +60,7 @@
             "Tech",
             "VIP"
         ],
-        "profilePicture": "https://example.com/profiles/samantha_lee.png",
+        "profilePicture": "https://gravatar.com/images/homepage/avatar-07.png",
         "interactions": [
             {
                 "interactionId": 1010,
@@ -112,7 +119,7 @@
             "Key Account",
             "High-Potential"
         ],
-        "profilePicture": "https://example.com/profiles/maria_fernandez.jpg",
+        "profilePicture": "https://gravatar.com/images/homepage/avatar-06.png",
         "interactions": [
             {
                 "interactionId": 1030,
@@ -149,7 +156,7 @@
             "PotentialPartner",
             "Renewable"
         ],
-        "profilePicture": "https://example.com/profiles/erik_johnson.png",
+        "profilePicture": "https://gravatar.com/images/homepage/avatar-08.png",
         "interactions": [
             {
                 "interactionId": 1040,
@@ -161,5 +168,302 @@
         ],
         "createdAt": "2025-01-25T14:30:00Z",
         "updatedAt": "2025-02-07T09:15:00Z"
+    },
+    {
+        "id": 6,
+        "name": "Liam Nguyen",
+        "company": "Oceanic Logistics",
+        "contactInfo": {
+            "email": "liam.nguyen@oceaniclogistics.com",
+            "phone": "+61-2-9876-5432"
+        },
+        "leadScore": 88,
+        "status": "Hot",
+        "assignedTo": "David Brown",
+        "industry": "Logistics",
+        "location": "Sydney, Australia",
+        "badges": [
+            "Strategic",
+            "VIP"
+        ],
+        "profilePicture": "https://gravatar.com/images/homepage/avatar-02.png",
+        "interactions": [
+            {
+                "interactionId": 1050,
+                "date": "2025-02-12",
+                "type": "Meeting",
+                "notes": "Discussed shipping contract terms",
+                "salesRep": "David Brown"
+            }
+        ],
+        "createdAt": "2025-01-18T08:20:00Z",
+        "updatedAt": "2025-02-12T16:15:00Z"
+    },
+    {
+        "id": 7,
+        "name": "Fatima Al-Mansoori",
+        "company": "Desert Solar",
+        "contactInfo": {
+            "email": "fatima.alm@desertsolar.ae",
+            "phone": "+971-4-331-7890"
+        },
+        "leadScore": 95,
+        "status": "Hot",
+        "assignedTo": "Alice Green",
+        "industry": "Energy",
+        "location": "Dubai, UAE",
+        "badges": [
+            "VIP",
+            "Enterprise"
+        ],
+        "profilePicture": null,
+        "interactions": [
+            {
+                "interactionId": 1051,
+                "date": "2025-02-14",
+                "type": "Video Call",
+                "notes": "Finalized 5-year service agreement",
+                "salesRep": "Alice Green"
+            }
+        ],
+        "createdAt": "2025-01-05T10:00:00Z",
+        "updatedAt": "2025-02-14T18:00:00Z"
+    },
+    {
+        "id": 8,
+        "name": "Olivia Müller",
+        "company": "Alpine Pharma",
+        "contactInfo": {
+            "email": "olivia.m@alpinepharma.de",
+            "phone": "+49-89-1234567"
+        },
+        "leadScore": 72,
+        "status": "Warm",
+        "assignedTo": "Charlie Kim",
+        "industry": "Healthcare",
+        "location": "Munich, Germany",
+        "badges": [
+            "High-Potential"
+        ],
+        "profilePicture": "https://example.com/profiles/olivia_muller.png",
+        "interactions": [
+            {
+                "interactionId": 1052,
+                "date": "2025-02-10",
+                "type": "Email",
+                "notes": "Requested product certifications",
+                "salesRep": "Charlie Kim"
+            }
+        ],
+        "createdAt": "2025-01-22T14:00:00Z",
+        "updatedAt": "2025-02-10T11:45:00Z"
+    },
+    {
+        "id": 9,
+        "name": "James Zhang",
+        "company": "Pacific Bank",
+        "contactInfo": {
+            "email": "james.zhang@pacificbank.hk",
+            "phone": "+852-2345-6789"
+        },
+        "leadScore": 82,
+        "status": "Warm",
+        "assignedTo": "Bob Carter",
+        "industry": "Finance",
+        "location": "Hong Kong",
+        "badges": [
+            "Key Account",
+            "Follow-Up"
+        ],
+        "profilePicture": "https://example.com/profiles/james_zhang.jpg",
+        "interactions": [
+            {
+                "interactionId": 1053,
+                "date": "2025-02-11",
+                "type": "Call",
+                "notes": "Discussed digital transformation project",
+                "salesRep": "Bob Carter"
+            }
+        ],
+        "createdAt": "2025-01-28T09:30:00Z",
+        "updatedAt": "2025-02-11T15:20:00Z"
+    },
+    {
+        "id": 10,
+        "name": "Aisha Adebayo",
+        "company": "Sahara Telecom",
+        "contactInfo": {
+            "email": "a.adebayo@sahartelecom.ng",
+            "phone": "+234-1-987-6543"
+        },
+        "leadScore": 68,
+        "status": "Cold",
+        "assignedTo": "David Brown",
+        "industry": "Telecommunications",
+        "location": "Lagos, Nigeria",
+        "badges": [
+            "New Lead"
+        ],
+        "profilePicture": "https://gravatar.com/images/homepage/avatar-09.png",
+        "interactions": [
+            {
+                "interactionId": 1054,
+                "date": "2025-02-13",
+                "type": "Email",
+                "notes": "Initial contact - no response",
+                "salesRep": "David Brown"
+            }
+        ],
+        "createdAt": "2025-02-01T12:00:00Z",
+        "updatedAt": "2025-02-13T10:10:00Z"
+    },
+    {
+        "id": 11,
+        "name": "Carlos Rivera",
+        "company": "Andes Mining",
+        "contactInfo": {
+            "email": "carlos.rivera@andesmining.cl",
+            "phone": "+56-2-2123-4567"
+        },
+        "leadScore": 91,
+        "status": "Hot",
+        "assignedTo": "Alice Green",
+        "industry": "Mining",
+        "location": "Santiago, Chile",
+        "badges": [
+            "Strategic",
+            "VIP"
+        ],
+        "profilePicture": "https://example.com/profiles/carlos_rivera.jpg",
+        "interactions": [
+            {
+                "interactionId": 1055,
+                "date": "2025-02-15",
+                "type": "Meeting",
+                "notes": "Signed preliminary agreement",
+                "salesRep": "Alice Green"
+            }
+        ],
+        "createdAt": "2024-11-15T16:45:00Z",
+        "updatedAt": "2025-02-15T19:00:00Z"
+    },
+    {
+        "id": 12,
+        "name": "Yuki Tanaka",
+        "company": "Fuji Robotics",
+        "contactInfo": {
+            "email": "y.tanaka@fujirobotics.jp",
+            "phone": "+81-3-9876-5432"
+        },
+        "leadScore": 79,
+        "status": "Warm",
+        "assignedTo": "Charlie Kim",
+        "industry": "Automation",
+        "location": "Tokyo, Japan",
+        "badges": [
+            "Tech",
+            "High-Potential"
+        ],
+        "profilePicture": "https://example.com/profiles/yuki_tanaka.png",
+        "interactions": [
+            {
+                "interactionId": 1056,
+                "date": "2025-02-16",
+                "type": "Demo",
+                "notes": "Showed warehouse automation solutions",
+                "salesRep": "Charlie Kim"
+            }
+        ],
+        "createdAt": "2025-01-14T07:30:00Z",
+        "updatedAt": "2025-02-16T14:20:00Z"
+    },
+    {
+        "id": 13,
+        "name": "Sophie Dubois",
+        "company": "Paris Fashion Group",
+        "contactInfo": {
+            "email": "sophie.d@parisfashion.fr",
+            "phone": "+33-1-4050-6070"
+        },
+        "leadScore": 84,
+        "status": "Warm",
+        "assignedTo": "Bob Carter",
+        "industry": "Fashion",
+        "location": "Paris, France",
+        "badges": [
+            "Key Account",
+            "Repeat Customer"
+        ],
+        "profilePicture": "https://example.com/profiles/sophie_dubois.jpg",
+        "interactions": [
+            {
+                "interactionId": 1057,
+                "date": "2025-02-17",
+                "type": "Call",
+                "notes": "Discussing new seasonal collection order",
+                "salesRep": "Bob Carter"
+            }
+        ],
+        "createdAt": "2024-12-01T09:00:00Z",
+        "updatedAt": "2025-02-17T11:15:00Z"
+    },
+    {
+        "id": 14,
+        "name": "Michael Cohen",
+        "company": "Boston EduTech",
+        "contactInfo": {
+            "email": "mcohen@bostonedutech.com",
+            "phone": "+1-617-555-0188"
+        },
+        "leadScore": 63,
+        "status": "Cold",
+        "assignedTo": "David Brown",
+        "industry": "Education",
+        "location": "Boston, USA",
+        "badges": [
+            "Non-Profit"
+        ],
+        "profilePicture": null,
+        "interactions": [
+            {
+                "interactionId": 1058,
+                "date": "2025-02-18",
+                "type": "Email",
+                "notes": "Sent grant application details",
+                "salesRep": "David Brown"
+            }
+        ],
+        "createdAt": "2025-02-10T15:00:00Z",
+        "updatedAt": "2025-02-18T10:05:00Z"
+    },
+    {
+        "id": 15,
+        "name": "Anika Patel",
+        "company": "Himalayan Resorts",
+        "contactInfo": {
+            "email": "anika.p@himalayanresorts.in",
+            "phone": "+91-11-2345-6789"
+        },
+        "leadScore": 89,
+        "status": "Hot",
+        "assignedTo": "Alice Green",
+        "industry": "Hospitality",
+        "location": "New Delhi, India",
+        "badges": [
+            "VIP",
+            "Enterprise"
+        ],
+        "profilePicture": "https://example.com/profiles/anika_patel.jpg",
+        "interactions": [
+            {
+                "interactionId": 1059,
+                "date": "2025-02-19",
+                "type": "Meeting",
+                "notes": "Finalizing luxury resort partnership",
+                "salesRep": "Alice Green"
+            }
+        ],
+        "createdAt": "2025-01-30T12:30:00Z",
+        "updatedAt": "2025-02-19T17:45:00Z"
     }
 ]

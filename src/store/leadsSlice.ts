@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-interface Interaction {
+export interface Interaction {
     interactionId: number;
     date: string;
     type: string;

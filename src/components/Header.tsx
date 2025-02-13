@@ -9,7 +9,7 @@ const Header: React.FC = () => {
                 <Link className="mr-4" to="/dashboard">Dashboard</Link>
                 <Link className="mr-4" to="/leads">Leads</Link>
                 <Link className="mr-4" to="/settings">Settings</Link>
-                <Link to="/">Logout</Link>
+                <Link to="/login">Logout</Link>
             </nav>
         </header>
     );
