@@ -59,7 +59,7 @@ const TableAccordion: React.FC<TableAccordionProps> = ({ lead }) => {
                         src={lead.profilePicture || DEFAULT_PROFILE_IMAGE}
                         onError={handleImageError}
                         alt={`${lead.name}'s profile`}
-                        className="h-16 w-16 object-cover rounded-full border border-gray-200"
+                        className="h-16 w-16 object-cover rounded-full border border-blue-600 shadow-lg"
                     />
                 </div>
                 <h3 className="text-lg font-semibold">{lead.name}</h3>

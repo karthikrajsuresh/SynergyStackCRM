@@ -2,12 +2,40 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import TableRow from '../components/table/TableRow';
-import { Lead } from '../store/leadsSlice';
 import TableHeader from '../components/table/TableHeader';
+import TableRow from '../components/table/TableRow';
+import Pagination from '../components/table/Pagination';
+import { Lead } from '../store/leadsSlice';
+
+// columnsConfig.ts (optional file) or inside LeadsPage
+export interface ColumnConfig {
+    key: string;
+    label: string;
+    frozen: boolean;
+    width: number;  // initial width in px
+}
+
+// Example columns: 
+export const columns: ColumnConfig[] = [
+    { key: 'checkbox', label: '', frozen: true, width: 50 },    // Select-all checkbox
+    { key: 'id', label: 'ID', frozen: true, width: 80 },
+    { key: 'name', label: 'Name', frozen: true, width: 150 },
+    { key: 'company', label: 'Company', frozen: false, width: 150 },
+    { key: 'status', label: 'Status', frozen: false, width: 100 },
+    { key: 'leadScore', label: 'Lead Score', frozen: false, width: 100 },
+    { key: 'action', label: 'Action', frozen: false, width: 100 },
+];
+
+const calculateTotalWidth = (columnWidths: { [key: string]: number }) =>
+    Object.values(columnWidths).reduce((acc, width) => acc + width, 0);
+
+interface Sorting {
+    key: string;
+    ascending: boolean;
+}
 
 const LeadsPage: React.FC = () => {
-    // State for leads data
+    // Data states
     const [leads, setLeads] = useState<Lead[]>([]);
     const [filteredLeads, setFilteredLeads] = useState<Lead[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -16,14 +44,30 @@ const LeadsPage: React.FC = () => {
     // Row selection
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
+    // Search and sorting
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sorting, setSorting] = useState<Sorting | null>(null);
+
     // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
     const rowsPerPage = 10;
 
-    // Search
-    const [searchQuery, setSearchQuery] = useState('');
+    // New: Column resizing state for dynamic resizing
+    const [columnWidths, setColumnWidths] = useState({
+        checkbox: 100,
+        id: 200,
+        name: 450,
+        company: 450,
+        status: 300,
+        leadScore: 285,
+        action: 100,
+    });
 
-    // Fetch leads
+    const handleColumnResize = (key: string, newWidth: number) => {
+        setColumnWidths((prev) => ({ ...prev, [key]: newWidth }));
+    };
+
+    // Fetch leads data
     useEffect(() => {
         const fetchLeads = async () => {
             try {
@@ -47,13 +91,6 @@ const LeadsPage: React.FC = () => {
         fetchLeads();
     }, []);
 
-    // Calculate pagination values
-    const totalItems = leads.length;
-    const totalPages = Math.ceil(totalItems / rowsPerPage);
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const currentLeads = leads.slice(startIndex, endIndex);
-
     // Filter leads by search query (name or company)
     useEffect(() => {
         if (!searchQuery) {
@@ -67,31 +104,62 @@ const LeadsPage: React.FC = () => {
             );
             setFilteredLeads(filtered);
         }
+        setCurrentPage(1); // Reset page when filtering changes
     }, [searchQuery, leads]);
 
-    // Handle row selection
+    // Handle sorting
+    const handleSort = (key: string) => {
+        let newSorting: Sorting;
+        if (sorting && sorting.key === key) {
+            newSorting = { key, ascending: !sorting.ascending };
+        } else {
+            newSorting = { key, ascending: true };
+        }
+        setSorting(newSorting);
+
+        const sorted = [...filteredLeads].sort((a, b) => {
+            const aValue = (a as any)[key];
+            const bValue = (b as any)[key];
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                return newSorting.ascending ? aValue - bValue : bValue - aValue;
+            }
+            const aStr = aValue?.toString() || '';
+            const bStr = bValue?.toString() || '';
+            return newSorting.ascending
+                ? aStr.localeCompare(bStr)
+                : bStr.localeCompare(aStr);
+        });
+        setFilteredLeads(sorted);
+    };
+
+    // Pagination calculations
+    const totalItems = filteredLeads.length;
+    const totalPages = Math.ceil(totalItems / rowsPerPage);
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const currentLeads = filteredLeads.slice(startIndex, endIndex);
+
+    // Row selection handlers
     const handleRowSelect = (id: number) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
 
-    // Select all for the currently filtered leads
-    const handleSelectAll = () => {
-        const allIds = filteredLeads.map((lead) => lead.id);
-        const allSelected = allIds.every((id) => selectedIds.includes(id));
-        if (allSelected) {
-            // Unselect all
-            setSelectedIds([]);
+    const handleSelectAllCurrentPage = () => {
+        const currentPageIds = currentLeads.map((lead) => lead.id);
+        const allCurrentSelected = currentPageIds.every((id) =>
+            selectedIds.includes(id)
+        );
+        if (allCurrentSelected) {
+            setSelectedIds((prev) => prev.filter((id) => !currentPageIds.includes(id)));
         } else {
-            // Select all
-            setSelectedIds(allIds);
+            setSelectedIds((prev) => Array.from(new Set([...prev, ...currentPageIds])));
         }
     };
 
-    // Placeholder actions for selected rows
+    // Placeholder actions
     const resetSelected = () => {
-        // Example: set leadScore to 0 for selected leads
         const updated = leads.map((lead) =>
             selectedIds.includes(lead.id) ? { ...lead, leadScore: 0 } : lead
         );
@@ -111,66 +179,36 @@ const LeadsPage: React.FC = () => {
         alert(`Exporting ${selectedIds.length} lead(s)...`);
     };
 
+    // Check if all rows on the current page are selected
+    const allOnPageSelected = currentLeads.every((lead) =>
+        selectedIds.includes(lead.id)
+    );
+
     if (loading) return <div className="p-4">Loading leads...</div>;
     if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
-    if (filteredLeads.length === 0) {
+    if (filteredLeads.length === 0)
         return (
-            <div>
+            <div className="flex flex-col min-h-screen">
                 <Header />
-                <div className="p-4">
+                <div className="p-4 flex-grow">
                     <h1 className="text-2xl font-bold mb-4">Leads</h1>
-                    <div className="mb-4">
-                        <input
-                            type="text"
-                            placeholder="Search by name or company"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="p-2 placeholder:italic placeholder:text-slate-400 block bg-white w-64 border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                        />
-                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search by name or company"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="p-2 border rounded w-64 mb-4"
+                    />
                     <div>No leads found.</div>
                 </div>
                 <Footer />
             </div>
         );
-    }
-
-    // Check if all filtered leads are selected
-    const allSelected = filteredLeads.every((lead) => selectedIds.includes(lead.id));
-
-    // Pagination handlers
-    const goToPreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
-
-    const goToNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
-
-    // Check if all rows on the current page are selected
-    const allOnPageSelected = currentLeads.every(lead => selectedIds.includes(lead.id));
-
-    // Render loading, error, or table UI
-    if (loading) {
-        return <div className="p-4">Loading leads...</div>;
-    }
-
-    if (error) {
-        return <div className="p-4 text-red-500">Error: {error}</div>;
-    }
-
-    if (leads.length === 0) {
-        return <div className="p-4">No leads found.</div>;
-    }
-
-    function handleSelectAllCurrentPage() {
-        throw new Error('Function not implemented.');
-    }
 
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <Header />
-            <div className="p-4">
+            <div className="p-4 flex-grow">
                 <h1 className="text-2xl font-bold mb-4">Leads</h1>
 
                 {/* Search bar */}
@@ -209,10 +247,10 @@ const LeadsPage: React.FC = () => {
                             <button onClick={resetSelected} className="hover:underline">
                                 Reset
                             </button>
-                            <button onClick={deleteSelected} className="hover:underline text-red-600 hover:text-red-800">
+                            <button onClick={deleteSelected} className="hover:underline text-red-600">
                                 Delete
                             </button>
-                            <button onClick={exportSelected} className="hover:underline text-green-600 hover:text-green-800">
+                            <button onClick={exportSelected} className="hover:underline text-green-600">
                                 Export
                             </button>
                         </div>
@@ -220,52 +258,44 @@ const LeadsPage: React.FC = () => {
                 )}
 
                 {/* Table */}
-                <div className="overflow-x-auto border border-gray-200 rounded">
-                    <table className="min-w-full text-sm">
-                        <TableHeader allSelected={allSelected} onSelectAll={handleSelectAll} />
+                <div className="overflow-x-auto border border-gray-300 rounded">
+                    <table className="min-w-full text-sm border-collapse relative"
+                        style={{ minWidth: calculateTotalWidth(columnWidths) }}
+                    >
+                        <TableHeader
+                            allSelected={allOnPageSelected}
+                            onSelectAll={handleSelectAllCurrentPage}
+                            sorting={sorting}
+                            onSort={handleSort}
+                            columnWidths={columnWidths}
+                            onColumnResize={handleColumnResize}
+                        />
                         <tbody>
-                            {filteredLeads.map((lead) => (
+                            {currentLeads.map((lead) => (
                                 <TableRow
+                                    // key={lead.id}
+                                    // lead={lead}
+                                    // isSelected={selectedIds.includes(lead.id)}
+                                    // onSelect={() => handleRowSelect(lead.id)}
+
                                     key={lead.id}
                                     lead={lead}
                                     isSelected={selectedIds.includes(lead.id)}
                                     onSelect={() => handleRowSelect(lead.id)}
+                                    columnWidths={columnWidths}
                                 />
                             ))}
                         </tbody>
                     </table>
                 </div>
+
                 {/* Pagination */}
-                <div className="flex items-center justify-between mt-4 text-sm text-gray-600">
-                    <div>
-                        Rows per page: <span className="font-semibold">{rowsPerPage}</span>
-                    </div>
-                    <div>
-                        {startIndex + 1} - {Math.min(endIndex, totalItems)} of {totalItems}
-                    </div>
-                    <div className="space-x-2">
-                        <button
-                            onClick={goToPreviousPage}
-                            disabled={currentPage === 1}
-                            className={`px-2 py-1 border rounded ${currentPage === 1
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'hover:bg-gray-200'
-                                }`}
-                        >
-                            Prev
-                        </button>
-                        <button
-                            onClick={goToNextPage}
-                            disabled={currentPage === totalPages}
-                            className={`px-2 py-1 border rounded ${currentPage === totalPages
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'hover:bg-gray-200'
-                                }`}
-                        >
-                            Next
-                        </button>
-                    </div>
-                </div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    rowsPerPage={rowsPerPage}
+                    onPageChange={setCurrentPage}
+                />
             </div>
             <Footer />
         </div>

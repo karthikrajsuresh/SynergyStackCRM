@@ -7,16 +7,29 @@ interface TableRowProps {
     lead: Lead;
     isSelected: boolean;
     onSelect: () => void;
+    columnWidths: { [key: string]: number };
 }
 
-const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect }) => {
+const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect, columnWidths }) => {
     const [expanded, setExpanded] = useState(false);
 
     return (
         <>
             {/* Main row */}
             <tr className="hover:bg-gray-50">
-                <td className="p-2 border-b text-center">
+                <td
+                    // className="p-2 border border-gray-300 text-center"
+
+                    style={{
+                        position: 'sticky',
+                        left: 0,
+                        zIndex: 10,
+                        backgroundColor: 'white',
+                        width: columnWidths.checkbox,
+                    }}
+                    className="p-2 border border-gray-300 text-center"
+
+                >
                     <input
                         type="checkbox"
                         checked={isSelected}
@@ -24,12 +37,12 @@ const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect }) => {
                         className="w-4 h-4"
                     />
                 </td>
-                <td className="p-2 border-b text-sm text-center text-gray-700">{lead.id}</td>
-                <td className="p-2 border-b text-sm text-center text-gray-900">{lead.name}</td>
-                <td className="p-2 border-b text-sm text-center text-gray-700">{lead.company}</td>
-                <td className="p-2 border-b text-sm text-center text-gray-700">{lead.status}</td>
-                <td className="p-2 border-b text-sm text-center text-center">{lead.leadScore}</td>
-                <td className="p-2 border-b text-blue-600 text-sm text-center">
+                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.id}</td>
+                <td className="p-2 border border-gray-300 text-sm text-center text-gray-900">{lead.name}</td>
+                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.company}</td>
+                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.status}</td>
+                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.leadScore}</td>
+                <td className="p-2 border border-gray-300 text-sm text-center text-blue-600">
                     <button
                         className="hover:underline"
                         onClick={() => setExpanded((prev) => !prev)}
@@ -42,11 +55,22 @@ const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect }) => {
             {/* Accordion row */}
             {expanded && (
                 <tr>
-                    <td colSpan={7} className="border-b">
+                    <td colSpan={7} className="p-2 border border-gray-300">
                         <TableAccordion lead={lead} />
                     </td>
                 </tr>
             )}
+            {/* At the end of your row (inside the fragment, after the accordion row) */}
+            {/* <tr className="relative">
+                <td colSpan={7} className="p-0">
+                    <div
+                        className="h-2 cursor-row-resize bg-transparent"
+                    // Implement similar mouse event handlers as in column resizing.
+                    // For example, use onMouseDown to start tracking vertical movement.
+                    ></div>
+                </td>
+            </tr> */}
+
         </>
     );
 };
