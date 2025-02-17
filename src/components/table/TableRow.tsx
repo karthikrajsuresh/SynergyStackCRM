@@ -8,15 +8,46 @@ interface TableRowProps {
     isSelected: boolean;
     onSelect: () => void;
     columnWidths: { [key: string]: number };
+    onDragStart: () => void;
+    onDrop: () => void;
 }
 
-const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect, columnWidths }) => {
+const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect, columnWidths, onDragStart, onDrop }) => {
     const [expanded, setExpanded] = useState(false);
+    const [isDraggedOver, setIsDraggedOver] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
     return (
         <>
             {/* Main row */}
-            <tr className="hover:bg-gray-50">
+            <tr
+
+                className={`hover:bg-gray-50 ${isDraggedOver ? 'border-t-2 border-cyan-400' : ''} ${isDragging ? 'bg-gray-100' : ''}`}
+                draggable={true}
+                onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = "move";
+                    e.dataTransfer.setData('text/plain', lead.id.toString());
+                    onDragStart();
+                    setIsDragging(true);
+                }}
+                onDragEnd={() => setIsDragging(false)}
+                onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDraggedOver(true);
+                }}
+                onDragEnter={(e) => {
+                    e.preventDefault();
+                    setIsDraggedOver(true);
+                }}
+                onDragLeave={() => setIsDraggedOver(false)}
+                onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDraggedOver(false);
+                    onDrop();
+                }}
+
+            >
+
                 <td
                     // className="p-2 border border-gray-300 text-center"
 
@@ -37,12 +68,49 @@ const TableRow: React.FC<TableRowProps> = ({ lead, isSelected, onSelect, columnW
                         className="w-4 h-4"
                     />
                 </td>
-                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.id}</td>
-                <td className="p-2 border border-gray-300 text-sm text-center text-gray-900">{lead.name}</td>
-                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.company}</td>
-                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.status}</td>
-                <td className="p-2 border border-gray-300 text-sm text-center text-gray-700">{lead.leadScore}</td>
-                <td className="p-2 border border-gray-300 text-sm text-center text-blue-600">
+                <td
+                    style={{
+                        position: 'sticky',
+                        left: columnWidths.checkbox,
+                        zIndex: 10,
+                        width: columnWidths.id,
+                    }}
+                    className="p-2 border border-gray-300 text-sm text-center text-gray-700 bg-white"
+                >
+                    {lead.id}
+                </td>
+                <td
+                    style={{
+                        position: 'sticky',
+                        left: columnWidths.checkbox + columnWidths.id,
+                        zIndex: 10,
+                        width: columnWidths.name,
+                    }}
+                    className="p-2 border border-gray-300 text-sm text-center text-gray-900 bg-white"
+                >
+                    {lead.name}
+                </td>
+                <td
+                    style={{ width: columnWidths.company }}
+                    className="p-2 border border-gray-300 text-sm text-center text-gray-700"
+                >
+                    {lead.company}
+                </td>
+                <td
+                    style={{ width: columnWidths.status }}
+                    className="p-2 border border-gray-300 text-sm text-center text-gray-700">
+                    {lead.status}
+                </td>
+                <td
+                    style={{ width: columnWidths.leadScore }}
+                    className="p-2 border border-gray-300 text-sm text-center text-gray-700"
+                >
+                    {lead.leadScore}
+                </td>
+                <td
+                    style={{ width: columnWidths.actions }}
+                    className="p-2 border border-gray-300 text-sm text-center text-blue-600"
+                >
                     <button
                         className="hover:underline"
                         onClick={() => setExpanded((prev) => !prev)}
