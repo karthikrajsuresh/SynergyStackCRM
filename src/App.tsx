@@ -5,8 +5,6 @@ import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
-import LeadDetailsPage from "./pages/LeadDetailsPage";
-import SettingsPage from "./pages/SettingsPage";
 
 const App: React.FC = () => {
   return (
@@ -17,8 +15,7 @@ const App: React.FC = () => {
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/leads" element={<LeadsPage />} />
-        <Route path="/lead/:id" element={<LeadDetailsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        {/* <Route path="/lead/:id" element={<LeadDetailsPage />} /> */}
       </Routes>
     </Router>
   );

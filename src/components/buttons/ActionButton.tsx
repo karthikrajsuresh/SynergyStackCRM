@@ -2,7 +2,7 @@ import React from "react";
 
 interface ActionButtonProps {
     label: string;
-    onClick: () => void;
+    onClick: (e: React.FormEvent) => void;
     variant?: "primary" | "secondary" | "danger";
 }
 
@@ -14,10 +14,10 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     const baseClasses = "px-4 py-2 rounded font-semibold";
     const variantClasses =
         variant === "primary"
-            ? "bg-blue-500 text-white hover:bg-blue-600"
+            ? "bluebtn"
             : variant === "secondary"
-                ? "bg-gray-500 text-white hover:bg-gray-600"
-                : "bg-red-500 text-white hover:bg-red-600";
+                ? "graybtn"
+                : "redbtn";
 
     return (
         <button className={`${baseClasses} ${variantClasses}`} onClick={onClick}>

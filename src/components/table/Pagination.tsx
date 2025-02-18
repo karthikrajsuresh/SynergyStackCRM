@@ -30,8 +30,8 @@ const Pagination: React.FC<PaginationProps> = ({
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className={`px-2 py-1 border rounded ${currentPage === 1
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'hover:bg-gray-200'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'hover:bg-gray-200'
                         }`}
                 >
                     Prev
@@ -40,8 +40,8 @@ const Pagination: React.FC<PaginationProps> = ({
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className={`px-2 py-1 border rounded ${currentPage === totalPages
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'hover:bg-gray-200'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'hover:bg-gray-200'
                         }`}
                 >
                     Next

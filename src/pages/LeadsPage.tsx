@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import TableHeader from '../components/table/TableHeader';
-import TableRow from '../components/table/TableRow';
-import Pagination from '../components/table/Pagination';
+import LeadsToolbar from '../components/LeadsToolbar';
+import LeadsSearchBar from '../components/LeadsSearchBar';
+import LeadsTable from '../components/LeadsTable';
+import LeadFormDrawer from '../components/LeadFormDrawer';
 import { Lead } from '../store/leadsSlice';
 
 export interface ColumnConfig {
@@ -23,33 +24,24 @@ export const columns: ColumnConfig[] = [
     { key: 'action', label: 'Action', frozen: false, width: 100 },
 ];
 
-const calculateTotalWidth = (columnWidths: { [key: string]: number }) =>
-    Object.values(columnWidths).reduce((acc, width) => acc + width, 0);
-
 interface Sorting {
     key: string;
     ascending: boolean;
 }
 
-
 const LeadsPage: React.FC = () => {
-    // Data states
+    // Data and state management
     const [leads, setLeads] = useState<Lead[]>([]);
     const [filteredLeads, setFilteredLeads] = useState<Lead[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [draggedLeadId, setDraggedLeadId] = useState<number | null>(null);
 
-    const handleDragStart = (leadId: number) => {
-        setDraggedLeadId(leadId);
-    };
-
     // Row selection
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-    // Global search state
+    // Search states
     const [searchQuery, setSearchQuery] = useState('');
-    // New: state for per-column search queries
     const [columnSearchQueries, setColumnSearchQueries] = useState({
         id: '',
         name: '',
@@ -65,14 +57,14 @@ const LeadsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const rowsPerPage = 10;
 
-    // New: Column resizing state
+    // Column widths
     const [columnWidths, setColumnWidths] = useState({
         checkbox: 100,
         id: 200,
         name: 450,
         company: 450,
-        status: 300,
-        leadScore: 285,
+        status: 290,
+        leadScore: 265,
         action: 100,
     });
 
@@ -104,14 +96,21 @@ const LeadsPage: React.FC = () => {
                 setLoading(false);
             }
         };
-
         fetchLeads();
     }, []);
 
-    // Filter leads based on both per‐column and global search queries
+    // Unique id for new leads
+    const [nextId, setNextId] = useState<number>(1);
+    useEffect(() => {
+        if (leads.length > 0) {
+            const maxId = Math.max(...leads.map((l) => l.id));
+            setNextId(maxId + 1);
+        }
+    }, [leads]);
+
+    // Filter leads
     useEffect(() => {
         let filtered = leads;
-        // Apply per-column search filters (using AND logic)
         Object.entries(columnSearchQueries).forEach(([key, query]) => {
             if (query) {
                 const lowerQuery = query.toLowerCase();
@@ -121,7 +120,6 @@ const LeadsPage: React.FC = () => {
                 });
             }
         });
-        // Global search filter (example: filtering name or company)
         if (searchQuery) {
             const lowerQ = searchQuery.toLowerCase();
             filtered = filtered.filter(
@@ -143,7 +141,6 @@ const LeadsPage: React.FC = () => {
             newSorting = { key, ascending: true };
         }
         setSorting(newSorting);
-
         const sorted = [...filteredLeads].sort((a, b) => {
             const aValue = (a as any)[key];
             const bValue = (b as any)[key];
@@ -152,34 +149,28 @@ const LeadsPage: React.FC = () => {
             }
             const aStr = aValue?.toString() || '';
             const bStr = bValue?.toString() || '';
-            return newSorting.ascending
-                ? aStr.localeCompare(bStr)
-                : bStr.localeCompare(aStr);
+            return newSorting.ascending ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
         });
         setFilteredLeads(sorted);
     };
 
     const handleDrop = (targetLeadId: number) => {
         if (draggedLeadId === null || draggedLeadId === targetLeadId) return;
-
         const updatedLeads = [...leads];
-        const draggedIndex = updatedLeads.findIndex(lead => lead.id === draggedLeadId);
-        const targetIndex = updatedLeads.findIndex(lead => lead.id === targetLeadId);
-
+        const draggedIndex = updatedLeads.findIndex((lead) => lead.id === draggedLeadId);
+        const targetIndex = updatedLeads.findIndex((lead) => lead.id === targetLeadId);
         if (draggedIndex === -1 || targetIndex === -1) return;
-
         const [draggedLead] = updatedLeads.splice(draggedIndex, 1);
         updatedLeads.splice(targetIndex, 0, draggedLead);
-
         setLeads(updatedLeads);
         setDraggedLeadId(null);
     };
 
     // Pagination calculations
     const totalItems = filteredLeads.length;
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const currentLeads = filteredLeads.slice(startIndex, endIndex);
+    const startIdx = (currentPage - 1) * rowsPerPage;
+    const endIdx = startIdx + rowsPerPage;
+    const currentLeads = filteredLeads.slice(startIdx, endIdx);
 
     // Row selection handlers
     const handleRowSelect = (id: number) => {
@@ -190,9 +181,7 @@ const LeadsPage: React.FC = () => {
 
     const handleSelectAllCurrentPage = () => {
         const currentPageIds = currentLeads.map((lead) => lead.id);
-        const allCurrentSelected = currentPageIds.every((id) =>
-            selectedIds.includes(id)
-        );
+        const allCurrentSelected = currentPageIds.every((id) => selectedIds.includes(id));
         if (allCurrentSelected) {
             setSelectedIds((prev) => prev.filter((id) => !currentPageIds.includes(id)));
         } else {
@@ -200,16 +189,7 @@ const LeadsPage: React.FC = () => {
         }
     };
 
-    // Placeholder actions
-    const resetSelected = () => {
-        const updated = leads.map((lead) =>
-            selectedIds.includes(lead.id) ? { ...lead, leadScore: 0 } : lead
-        );
-        setLeads(updated);
-        setFilteredLeads(updated);
-        setSelectedIds([]);
-    };
-
+    // Delete action
     const deleteSelected = () => {
         const updated = leads.filter((lead) => !selectedIds.includes(lead.id));
         setLeads(updated);
@@ -217,125 +197,254 @@ const LeadsPage: React.FC = () => {
         setSelectedIds([]);
     };
 
-    const exportSelected = () => {
-        alert(`Exporting ${selectedIds.length} lead(s)...`);
+    // Export functions (Excel and CSV)
+    const exportAsExcel = (data: Lead[], fileName: string) => {
+        let tableHTML = '<table border="1"><thead><tr><th>ID</th><th>Name</th><th>Company</th><th>Status</th><th>Lead Score</th></tr></thead><tbody>';
+        data.forEach((lead) => {
+            tableHTML += `<tr><td>${lead.id}</td><td>${lead.name}</td><td>${lead.company}</td><td>${lead.status}</td><td>${lead.leadScore}</td></tr>`;
+        });
+        tableHTML += '</tbody></table>';
+        const dataType = 'application/vnd.ms-excel';
+        const downloadLink = document.createElement('a');
+        const blob = new Blob(['\ufeff', tableHTML], { type: dataType });
+        const url = URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.download = fileName;
+        downloadLink.click();
+        URL.revokeObjectURL(url);
     };
 
-    const allOnPageSelected = currentLeads.every((lead) =>
-        selectedIds.includes(lead.id)
-    );
+    const exportAsCSV = (data: Lead[], fileName: string) => {
+        let csvContent = "ID,Name,Company,Status,Lead Score\n";
+        data.forEach((lead) => {
+            csvContent += `${lead.id},"${lead.name}","${lead.company}",${lead.status},${lead.leadScore}\n`;
+        });
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
-    if (loading) return <div className="p-4">Loading leads...</div>;
-    if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
+    // Drawer State & Editing
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [badgesInput, setBadgesInput] = useState('');
+    const [newLead, setNewLead] = useState<Lead>({
+        id: 0,
+        name: '',
+        company: '',
+        contactInfo: { email: '', phone: '' },
+        leadScore: 0,
+        status: 'New',
+        assignedTo: '',
+        industry: '',
+        location: '',
+        badges: [],
+        profilePicture: '',
+        interactions: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    });
+    const [newInteraction, setNewInteraction] = useState({
+        interactionId: Date.now(),
+        date: '',
+        type: '',
+        notes: '',
+        salesRep: '',
+    });
+
+    const addInteraction = () => {
+        if (
+            newInteraction.date ||
+            newInteraction.type ||
+            newInteraction.notes ||
+            newInteraction.salesRep
+        ) {
+            setNewLead((prev) => ({
+                ...prev,
+                interactions: [...prev.interactions, newInteraction],
+            }));
+            setNewInteraction({
+                interactionId: Date.now(),
+                date: '',
+                type: '',
+                notes: '',
+                salesRep: '',
+            });
+        }
+    };
+
+    // Handle profile picture upload
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                setNewLead({ ...newLead, profilePicture: ev.target?.result as string });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleCreateSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const badgesArray = badgesInput
+            .split(',')
+            .map((badge) => badge.trim())
+            .filter((badge) => badge);
+        const leadToSubmit = { ...newLead, badges: badgesArray, updatedAt: new Date().toISOString() };
+        if (isEditing) {
+            setLeads((prev) => prev.map((l) => (l.id === leadToSubmit.id ? leadToSubmit : l)));
+            setFilteredLeads((prev) => prev.map((l) => (l.id === leadToSubmit.id ? leadToSubmit : l)));
+            console.log('Edited Lead:', JSON.stringify(leadToSubmit, null, 2));
+            setIsEditing(false);
+        } else {
+            const createdLead = { ...leadToSubmit, id: nextId, createdAt: new Date().toISOString() };
+            setLeads((prev) => [...prev, createdLead]);
+            setFilteredLeads((prev) => [...prev, createdLead]);
+            console.log('New Lead:', JSON.stringify(createdLead, null, 2));
+            setNextId(nextId + 1);
+        }
+        setNewLead({
+            id: 0,
+            name: '',
+            company: '',
+            contactInfo: { email: '', phone: '' },
+            leadScore: 0,
+            status: 'New',
+            assignedTo: '',
+            industry: '',
+            location: '',
+            badges: [],
+            profilePicture: '',
+            interactions: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        });
+        setBadgesInput('');
+        setIsDrawerOpen(false);
+    };
+
+    const handleEditClick = () => {
+        const leadToEdit = leads.find((l) => l.id === selectedIds[0]);
+        if (leadToEdit) {
+            setNewLead(leadToEdit);
+            setBadgesInput(leadToEdit.badges.join(', '));
+            setIsEditing(true);
+            setIsDrawerOpen(true);
+        }
+    };
+
+    // Dropdown States for Export Buttons
+    const [exportAllDropdown, setExportAllDropdown] = useState(false);
+    const [exportSelectedDropdown, setExportSelectedDropdown] = useState(false);
+
+    const handleExportAllExcel = () => {
+        exportAsExcel(leads, 'leads_export.xls');
+        setExportAllDropdown(false);
+    };
+    const handleExportAllCSV = () => {
+        exportAsCSV(leads, 'leads_export.csv');
+        setExportAllDropdown(false);
+    };
+    const handleExportSelectedExcel = () => {
+        const selectedData = leads.filter((l) => selectedIds.includes(l.id));
+        exportAsExcel(selectedData, 'selected_leads_export.xls');
+        setExportSelectedDropdown(false);
+    };
+    const handleExportSelectedCSV = () => {
+        const selectedData = leads.filter((l) => selectedIds.includes(l.id));
+        exportAsCSV(selectedData, 'selected_leads_export.csv');
+        setExportSelectedDropdown(false);
+    };
+
+    if (loading) return <div className="p-8">Loading leads...</div>;
+    if (error) return <div className="p-8 text-red-500">Error: {error}</div>;
     if (filteredLeads.length === 0)
         return (
             <div className="flex flex-col min-h-screen">
                 <Header />
-                <div className="p-4 flex-grow">
-                    <h1 className="text-2xl font-bold mb-4">Leads</h1>
-                    <input
-                        type="text"
-                        placeholder="Search by name or company"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="p-2 placeholder:italic placeholder:text-slate-400 block bg-white w-64 border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                    />
-
-                    <div>No leads found.</div>
+                <div className="p-8">
+                    <h1 className="text-3xl font-bold mb-6">Leads</h1>
+                    <LeadsSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+                    <div className="text-center text-xl text-gray-600">No leads found.</div>
                 </div>
                 <Footer />
             </div>
         );
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-gray-50">
             <Header />
-            <div className="p-4 flex-grow">
-                <h1 className="text-2xl font-bold mb-4">Leads</h1>
-                {/* Global Search */}
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Search by name or company"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="p-2 placeholder:italic placeholder:text-slate-400 block bg-white w-64 border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                    />
-                </div>
-                {/* Toolbar */}
-                {selectedIds.length === 0 ? (
-                    <div className="flex items-center justify-between mb-3 text-sm text-gray-600">
-                        <div className="space-x-4">
-                            <button className="hover:underline">Columns</button>
-                            <button className="hover:underline">Add Filter</button>
-                        </div>
-                        <div className="space-x-4">
-                            <button className="bluebtn">
-                                Create
-                            </button>
-                            <button className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600">
-                                Export All
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex items-center justify-between mb-3 bg-blue-50 p-2 rounded border border-blue-200">
-                        <span className="text-sm text-blue-600 font-semibold">
-                            {selectedIds.length} item{selectedIds.length > 1 && 's'} selected
-                        </span>
-                        <div className="space-x-4 text-sm">
-                            <button onClick={resetSelected} className="hover:underline">
-                                Reset
-                            </button>
-                            <button onClick={deleteSelected} className="hover:underline text-red-600">
-                                Delete
-                            </button>
-                            <button onClick={exportSelected} className="hover:underline text-green-600">
-                                Export
-                            </button>
-                        </div>
-                    </div>
-                )}
-                {/* Table */}
-                <div className="overflow-x-auto border border-gray-300 rounded">
-                    <table
-                        className="min-w-full text-sm border-collapse relative"
-                        style={{ minWidth: calculateTotalWidth(columnWidths) }}
-                    >
-                        <TableHeader
-                            allSelected={allOnPageSelected}
-                            onSelectAll={handleSelectAllCurrentPage}
-                            sorting={sorting}
-                            onSort={handleSort}
-                            columnWidths={columnWidths}
-                            onColumnResize={handleColumnResize}
-                            columnSearchQueries={columnSearchQueries}
-                            onColumnSearchChange={handleColumnSearchChange}
-                        />
-                        <tbody>
-                            {currentLeads.map((lead) => (
-                                <TableRow
-                                    key={lead.id}
-                                    lead={lead}
-                                    isSelected={selectedIds.includes(lead.id)}
-                                    onSelect={() => handleRowSelect(lead.id)}
-                                    columnWidths={columnWidths}
-                                    onDragStart={() => handleDragStart(lead.id)}
-                                    onDrop={() => handleDrop(lead.id)}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                {/* Pagination */}
-                <Pagination
+            <div className="p-8 flex-grow">
+                <h1 className="text-3xl font-bold mb-6 text-center ">Leads</h1>
+                <LeadsSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+                <LeadsToolbar
+                    selectedIds={selectedIds}
+                    onCreateClick={() => setIsDrawerOpen(true)}
+                    onEditClick={handleEditClick}
+                    onDeleteClick={deleteSelected}
+                    exportAllDropdownOpen={exportAllDropdown}
+                    toggleExportAllDropdown={() => setExportAllDropdown(!exportAllDropdown)}
+                    onExportAllExcel={handleExportAllExcel}
+                    onExportAllCSV={handleExportAllCSV}
+                    exportSelectedDropdownOpen={exportSelectedDropdown}
+                    toggleExportSelectedDropdown={() => setExportSelectedDropdown(!exportSelectedDropdown)}
+                    onExportSelectedExcel={handleExportSelectedExcel}
+                    onExportSelectedCSV={handleExportSelectedCSV}
+                />
+                <LeadsTable
+                    leads={currentLeads}
+                    columnWidths={columnWidths}
+                    sorting={sorting}
+                    onSort={handleSort}
+                    onColumnResize={handleColumnResize}
+                    columnSearchQueries={columnSearchQueries}
+                    onColumnSearchChange={handleColumnSearchChange}
+                    selectedIds={selectedIds}
+                    onSelectRow={handleRowSelect}
+                    onSelectAll={handleSelectAllCurrentPage}
+                    onDragStart={(id: number) => setDraggedLeadId(id)}
+                    onDrop={(id: number) => handleDrop(id)}
                     currentPage={currentPage}
-                    totalItems={totalItems}
                     rowsPerPage={rowsPerPage}
+                    totalItems={totalItems}
                     onPageChange={setCurrentPage}
                 />
             </div>
             <Footer />
+            {isDrawerOpen && (
+                <>
+                    <div
+                        className="fixed inset-0 bg-black opacity-50 z-40"
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            setIsEditing(false);
+                        }}
+                    ></div>
+                    <LeadFormDrawer
+                        isEditing={isEditing}
+                        lead={newLead}
+                        badgesInput={badgesInput}
+                        newInteraction={newInteraction}
+                        onChange={setNewLead}
+                        onBadgesChange={setBadgesInput}
+                        onNewInteractionChange={setNewInteraction}
+                        onAddInteraction={addInteraction}
+                        onFileChange={handleFileChange}
+                        onSubmit={handleCreateSubmit}
+                        onCancel={() => {
+                            setIsDrawerOpen(false);
+                            setIsEditing(false);
+                        }}
+                    />
+                </>
+            )}
         </div>
     );
 };

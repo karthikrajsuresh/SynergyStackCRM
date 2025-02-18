@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
@@ -7,38 +7,71 @@ import { TextInput } from '../components/forms/TextInput';
 import LoginHeader from '../components/loginHeader';
 import LoginFooter from '../components/loginFooter';
 
+interface UserCredential {
+    username: string;
+    password: string;
+}
 
 const LoginPage: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [allowedUsers, setAllowedUsers] = useState<UserCredential[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // Handle the login form submission with error handling.
+    // Fetch default credentials from public/data/usercredentials.json on mount
+    useEffect(() => {
+        fetch('/data/usercredentials.json')
+            .then((res) => res.json())
+            .then((data: UserCredential | UserCredential[]) => {
+                let credentials: UserCredential[] = [];
+                if (Array.isArray(data)) {
+                    credentials = data;
+                } else {
+                    credentials.push(data);
+                }
+                // Check for registered user in localStorage
+                const regUserStr = localStorage.getItem('registeredUser');
+                if (regUserStr) {
+                    try {
+                        const regUser = JSON.parse(regUserStr) as UserCredential;
+                        credentials.push(regUser);
+                    } catch (e) {
+                        console.error('Error parsing registered user:', e);
+                    }
+                }
+                setAllowedUsers(credentials);
+            })
+            .catch((err) => {
+                console.error('Error fetching user credentials:', err);
+                setErrorMessage('Failed to load user credentials.');
+            });
+    }, []);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage(null);
 
-        try {
-            // Basic input validation
-            if (!username || !password) {
-                throw new Error('Username and Password are required.');
-            }
-
-            // Simulate an API call delay (replace this with your actual API call)
-            await new Promise((resolve) => setTimeout(resolve, 500));
-
-            // Dispatch the login action
-            dispatch(login(username));
-            // Navigate to the dashboard on successful login
-            navigate('/dashboard');
-        } catch (error: any) {
-            console.error('Login error:', error);
-            setErrorMessage(error.message || 'An error occurred during login.');
-        } finally {
-            console.log('Login attempt finished.');
+        if (!username || !password) {
+            setErrorMessage('Username and Password are required.');
+            return;
         }
+
+        // Check if entered credentials match any allowed user
+        const isValid = allowedUsers.some(
+            (user) => user.username === username && user.password === password
+        );
+
+        if (!isValid) {
+            setErrorMessage('Invalid username or password.');
+            return;
+        }
+
+        // Dispatch login action and navigate to dashboard
+        dispatch(login(username));
+        navigate('/dashboard');
     };
 
     return (
@@ -61,7 +94,7 @@ const LoginPage: React.FC = () => {
                         placeholder="Enter password"
                         type="password"
                     />
-                    <ActionButton label="Login" onClick={() => handleLogin} variant="primary" />
+                    <ActionButton label="Login" onClick={handleLogin} variant="primary" />
                     <div className="mt-4 text-center">
                         <span className="text-gray-600">Don't have an account? </span>
                         <button

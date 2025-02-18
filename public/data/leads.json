@@ -16,7 +16,7 @@
             "Enterprise",
             "High-Potential"
         ],
-        "profilePicture": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+        "profilePicture": "public/data/ImageData/id-1.jpeg",
         "interactions": [
             {
                 "interactionId": 1001,
@@ -60,7 +60,7 @@
             "Tech",
             "VIP"
         ],
-        "profilePicture": "https://gravatar.com/images/homepage/avatar-07.png",
+        "profilePicture": "public/data/ImageData/id-2.png",
         "interactions": [
             {
                 "interactionId": 1010,
@@ -119,7 +119,7 @@
             "Key Account",
             "High-Potential"
         ],
-        "profilePicture": "https://gravatar.com/images/homepage/avatar-06.png",
+        "profilePicture": "public/data/ImageData/id-4.png",
         "interactions": [
             {
                 "interactionId": 1030,
@@ -186,7 +186,7 @@
             "Strategic",
             "VIP"
         ],
-        "profilePicture": "https://gravatar.com/images/homepage/avatar-02.png",
+        "profilePicture": "public/data/ImageData/id-6.png",
         "interactions": [
             {
                 "interactionId": 1050,
@@ -304,7 +304,7 @@
         "badges": [
             "New Lead"
         ],
-        "profilePicture": "https://gravatar.com/images/homepage/avatar-09.png",
+        "profilePicture": "public/data/ImageData/id-10.png",
         "interactions": [
             {
                 "interactionId": 1054,

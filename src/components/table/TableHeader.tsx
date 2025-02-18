@@ -1,5 +1,4 @@
-// src/components/table/TableHeader.tsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 
 interface Sorting {
     key: string;
@@ -13,7 +12,6 @@ interface TableHeaderProps {
     onSort: (key: string) => void;
     columnWidths: { [key: string]: number };
     onColumnResize: (key: string, newWidth: number) => void;
-    // New props for column search:
     columnSearchQueries: { [key: string]: string };
     onColumnSearchChange: (columnKey: string, query: string) => void;
 }
@@ -28,90 +26,101 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     columnSearchQueries,
     onColumnSearchChange,
 }) => {
+    // Refs for resizing
     const resizingColumn = useRef<string | null>(null);
     const startX = useRef<number>(0);
     const startWidth = useRef<number>(0);
 
-    // Local state to track search box visibility per column:
+    // Local state to toggle search box per column
     const [visibleSearch, setVisibleSearch] = useState<{ [key: string]: boolean }>({});
 
-    const toggleSearchVisibility = (columnKey: string) => {
+    const toggleSearchVisibility = useCallback((columnKey: string) => {
         setVisibleSearch((prev) => ({ ...prev, [columnKey]: !prev[columnKey] }));
-    };
+    }, []);
 
-    const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
-        e.stopPropagation();
-        resizingColumn.current = columnKey;
-        startX.current = e.clientX;
-        startWidth.current = columnWidths[columnKey];
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-    };
+    const handleMouseMove = useCallback(
+        (e: MouseEvent) => {
+            if (resizingColumn.current) {
+                const delta = e.clientX - startX.current;
+                const newWidth = Math.max(startWidth.current + delta, 50); // minimum width 50px
+                onColumnResize(resizingColumn.current, newWidth);
+            }
+        },
+        [onColumnResize]
+    );
 
-    const handleMouseMove = (e: MouseEvent) => {
-        if (resizingColumn.current) {
-            const delta = e.clientX - startX.current;
-            const newWidth = Math.max(startWidth.current + delta, 50); // minimum 50px
-            onColumnResize(resizingColumn.current, newWidth);
-        }
-    };
-
-    const handleMouseUp = () => {
+    const handleMouseUp = useCallback(() => {
         resizingColumn.current = null;
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
-    };
+    }, [handleMouseMove]);
 
-    const renderSortButton = (columnKey: string) => {
-        const isSorted = sorting?.key === columnKey;
-        const sortIndicator = isSorted ? (sorting.ascending ? '⬇️' : '⬆️') : '↕️';
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent, columnKey: string) => {
+            e.stopPropagation();
+            resizingColumn.current = columnKey;
+            startX.current = e.clientX;
+            startWidth.current = columnWidths[columnKey];
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        },
+        [columnWidths, handleMouseMove, handleMouseUp]
+    );
 
-        return (
-            <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onSort(columnKey);
-                }}
-                className={`ml-2 p-1 rounded hover:bg-gray-300 focus:outline-none ${isSorted ? 'text-black' : 'text-black'}`}
-                title={isSorted ? (sorting.ascending ? 'Sorted ascending' : 'Sorted descending') : 'Sort column'}
-            >
-                {sortIndicator}
-            </button>
-        );
-    };
+    const renderSortButton = useCallback(
+        (columnKey: string) => {
+            const isSorted = sorting?.key === columnKey;
+            const sortIndicator = isSorted ? (sorting.ascending ? '⬇️' : '⬆️') : '↕️';
+            return (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onSort(columnKey);
+                    }}
+                    className="ml-2 p-1 rounded hover:bg-gray-300 focus:outline-none"
+                    title={isSorted ? (sorting.ascending ? 'Sorted ascending' : 'Sorted descending') : 'Sort column'}
+                >
+                    {sortIndicator}
+                </button>
+            );
+        },
+        [onSort, sorting]
+    );
 
-    // Changed: renderHeaderCell now returns a <div> instead of a nested <th>
-    const renderHeaderCell = (columnKey: string, label: string) => {
-        return (
-            <div className="flex flex-col">
-                <div className="flex items-center justify-center">
-                    <span>{label}</span>
-                    {renderSortButton(columnKey)}
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSearchVisibility(columnKey);
-                        }}
-                        className="ml-2 p-1 rounded hover:bg-gray-300 focus:outline-none"
-                        title="Search column"
-                    >
-                        🔍
-                    </button>
-                </div>
-                {visibleSearch[columnKey] && (
-                    <div className="mt-1">
-                        <input
-                            type="text"
-                            value={columnSearchQueries[columnKey] || ''}
-                            onChange={(e) => onColumnSearchChange(columnKey, e.target.value)}
-                            className="w-full p-1 border rounded"
-                            placeholder={`Search ${label}`}
-                        />
+    const renderHeaderCell = useCallback(
+        (columnKey: string, label: string) => {
+            return (
+                <div className="flex flex-col">
+                    <div className="flex items-center justify-center">
+                        <span>{label}</span>
+                        {renderSortButton(columnKey)}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toggleSearchVisibility(columnKey);
+                            }}
+                            className="ml-2 p-1 rounded hover:bg-gray-300 focus:outline-none"
+                            title="Search column"
+                        >
+                            🔍
+                        </button>
                     </div>
-                )}
-            </div>
-        );
-    };
+                    {visibleSearch[columnKey] && (
+                        <div className="mt-1">
+                            <input
+                                type="text"
+                                value={columnSearchQueries[columnKey] || ''}
+                                onChange={(e) => onColumnSearchChange(columnKey, e.target.value)}
+                                className="w-full p-1 border rounded"
+                                placeholder={`Search ${label}`}
+                            />
+                        </div>
+                    )}
+                </div>
+            );
+        },
+        [columnSearchQueries, onColumnSearchChange, renderSortButton, toggleSearchVisibility, visibleSearch]
+    );
 
     return (
         <thead className="bg-gray-200">
