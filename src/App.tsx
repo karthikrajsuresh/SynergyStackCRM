@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
+import DynamicTablePage from "./pages/DynamicTablePage";
 
 const App: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const App: React.FC = () => {
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/leads" element={<LeadsPage />} />
-        {/* <Route path="/lead/:id" element={<LeadDetailsPage />} /> */}
+        <Route path="/table" element={<DynamicTablePage />} />
       </Routes>
     </Router>
   );
