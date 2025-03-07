@@ -1,6 +1,9 @@
 // src/pages/HomePage.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import LoginHeader from "../components/loginHeader";
+import Footer from "../components/Footer";
+
 
 const HomePage: React.FC = () => {
     // Contact form state
@@ -25,25 +28,7 @@ const HomePage: React.FC = () => {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Header */}
-            <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
-                <div className="container mx-auto flex flex-col md:flex-row justify-between items-center py-6 px-4">
-                    <h1 className="text-4xl font-extrabold mb-4 md:mb-0">SynergyStackCRM</h1>
-                    <div className="flex space-x-4">
-                        <Link
-                            to="/login"
-                            className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition"
-                        >
-                            Login
-                        </Link>
-                        <Link
-                            to="/register"
-                            className="px-6 py-3 border border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition"
-                        >
-                            Register
-                        </Link>
-                    </div>
-                </div>
-            </header>
+            <LoginHeader />
 
             {/* Hero Section */}
             <section className="bg-gray-100 py-20">
@@ -183,10 +168,7 @@ const HomePage: React.FC = () => {
                     </div>
                 </div>
             </section>
-            <footer className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg p-4 text-center mt-auto">
-                <p className="text-sm">&copy; {(new Date().getFullYear())} <a href="https://github.com/karthikrajsuresh/SynergyStackCRM" target="_blank"><strong>SynergyStackCRM </strong></a></p>
-                <p className="text-sm" >Developed by <a href="https://github.com/karthikrajsuresh" target="_blank"><strong>Karthik Raj</strong></a></p>
-            </footer>
+            <Footer />
         </div>
     );
 };

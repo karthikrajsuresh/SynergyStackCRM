@@ -1,0 +1,124 @@
+[
+    {
+        "id": "1",
+        "date": "18-Sep-2019",
+        "paystub_Details": {
+            "name": "Henry Nixon",
+            "position": "Senior Programmer",
+            "address": "30 Wertheim Crt",
+            "suite": "Suite C16",
+            "richmond": "Richmond Hill, ON L4B 1B9",
+            "e_id": 21,
+            "peroid": "10-Sep-2019 to 18-Sep-2019",
+            "payment_date": "18-Sep-2019",
+            "net_pay": 24600,
+            "e_total": 38000,
+            "d_total": 13400
+        },
+        "earn": {
+            "detail": [
+                {
+                    "description": "EI",
+                    "Units": 80,
+                    "Rate": 800,
+                    "Amount": 24000
+                },
+                {
+                    "description": "Hourly Wages",
+                    "Units": 80,
+                    "Rate": 800,
+                    "Amount": 14000
+                }
+            ]
+        },
+        "deduction": {
+            "detail": [
+                {
+                    "description": "CPP/QPP",
+                    "Units": 2400
+                },
+                {
+                    "description": "EI",
+                    "Units": 1400
+                },
+                {
+                    "description": "Fed Inc Tax",
+                    "Units": 2400
+                },
+                {
+                    "description": "Prov Inc Taxi",
+                    "Units": 2400
+                },
+                {
+                    "description": "Cpp/Qpp",
+                    "Units": 2400
+                },
+                {
+                    "description": "Cpp/Qpp",
+                    "Units": 2400
+                }
+            ]
+        }
+    },
+    {
+        "id": "2",
+        "date": "18-Oct-2019",
+        "paystub_Details": {
+            "name": "Naveen Avidi",
+            "position": "The Programmer",
+            "address": "30 Wertheim Crt",
+            "suite": "Suite C16",
+            "richmond": "Richmond Hill, ON L4B 1B9",
+            "e_id": 21,
+            "peroid": "10-Oct-2019 to 18-Oct-2019",
+            "payment_date": "18-Oct-2019",
+            "net_pay": 24600,
+            "e_total": 38000,
+            "d_total": 13400
+        },
+        "earn": {
+            "detail": [
+                {
+                    "description": "EI",
+                    "Units": 80,
+                    "Rate": 800,
+                    "Amount": 25000
+                },
+                {
+                    "description": "Hourly Wages",
+                    "Units": 80,
+                    "Rate": 800,
+                    "Amount": 17000
+                }
+            ]
+        },
+        "deduction": {
+            "detail": [
+                {
+                    "description": "CPP/QPP",
+                    "Units": 2400
+                },
+                {
+                    "description": "EI",
+                    "Units": 1400
+                },
+                {
+                    "description": "Fed Inc Tax",
+                    "Units": 2400
+                },
+                {
+                    "description": "Prov Inc Taxi",
+                    "Units": 2400
+                },
+                {
+                    "description": "Cpp/Qpp",
+                    "Units": 2400
+                },
+                {
+                    "description": "Cpp/Qpp",
+                    "Units": 2400
+                }
+            ]
+        }
+    }
+]

@@ -3,6 +3,7 @@ import { Lead } from '../store/leadsSlice';
 
 interface LeadsChartProps {
     leads: Lead[];
+    // statuses: any[];
 }
 
 const SVG_WIDTH = 500;
@@ -15,13 +16,17 @@ const numYTicks = 5;
 
 const LeadsChart: React.FC<LeadsChartProps> = ({ leads }) => {
     // Aggregate leads by status (Hot, Warm, Cold, New)
-    const statuses = ['Hot', 'Warm', 'Cold', 'New'];
+    const statuses = ["Hot", "Warm", "Cold", "New"];
     const data: [string, number][] = statuses.map((status) => [
         status,
         leads.filter((lead) => lead.status === status).length,
     ]);
-
-    const dataYMax = Math.max(...data.map(([_, count]) => count));
+    const news: [] = [
+        {
+            one : `new`
+        }
+    ];
+    const dataYMax = Math.max(...data.map(([, count]) => count));
     const dataYMin = 0;
     const dataYRange = dataYMax - dataYMin || 1;
     const xAxisY = y0 + yAxisLength;
@@ -70,7 +75,7 @@ const LeadsChart: React.FC<LeadsChartProps> = ({ leads }) => {
                 {/* Bar Plots */}
                 {data.map(([status, count], index) => {
                     const x = x0 + index * barPlotWidth;
-                    const yRatio = (Number(count) - dataYMin) / dataYRange;
+                    const yRatio = ((count) - dataYMin) / dataYRange;
                     const barHeight = yRatio * yAxisLength;
                     const y = y0 + yAxisLength - barHeight;
                     const sidePadding = 50;

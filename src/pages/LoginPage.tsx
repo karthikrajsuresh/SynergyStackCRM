@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { ActionButton } from '../components/buttons/ActionButton';
 import { TextInput } from '../components/forms/TextInput';
 import LoginHeader from '../components/loginHeader';
-import LoginFooter from '../components/loginFooter';
+import Footer from '../components/Footer';
 
 interface UserCredential {
     username: string;
@@ -107,7 +107,7 @@ const LoginPage: React.FC = () => {
                     </div>
                 </form>
             </div>
-            <LoginFooter />
+            <Footer />
         </div>
     );
 };

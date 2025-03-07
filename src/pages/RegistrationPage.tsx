@@ -3,7 +3,7 @@ import { ActionButton } from '../components/buttons/ActionButton';
 import { TextInput } from '../components/forms/TextInput';
 import { useNavigate } from 'react-router-dom';
 import LoginHeader from '../components/loginHeader';
-import LoginFooter from '../components/loginFooter';
+import Footer from '../components/Footer';
 
 interface UserCredential {
     username: string;
@@ -92,7 +92,7 @@ const RegistrationPage: React.FC = () => {
                     <ActionButton label="Back" onClick={() => navigate('/login')} variant="secondary" />
                 </form>
             </div>
-            <LoginFooter />
+            <Footer />
         </div>
     );
 };

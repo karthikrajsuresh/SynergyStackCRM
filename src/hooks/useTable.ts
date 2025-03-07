@@ -1,4 +1,3 @@
-// src/hooks/useTable.ts
 import { useMemo } from 'react';
 
 export type SortBy<T> = {

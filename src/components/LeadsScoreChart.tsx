@@ -27,7 +27,7 @@ const LeadsScoreChart: React.FC<LeadsScoreChartProps> = ({ leads }) => {
     const yScale = (score: number) =>
         margin.top + yRange - ((score - minScore) / scoreRange) * yRange;
 
-    // Create polyline points
+    // polyline points
     const points = leads.map((lead, i) => `${xScale(i)},${yScale(lead.leadScore)}`).join(' ');
 
     return (
@@ -59,7 +59,7 @@ const LeadsScoreChart: React.FC<LeadsScoreChartProps> = ({ leads }) => {
                         x={xScale(i)}
                         y={SVG_HEIGHT - margin.bottom + 20}
                         textAnchor="start"
-                        transform={`rotate(45, ${xScale(i)}, ${SVG_HEIGHT - margin.bottom + 20})`}
+                        transform={`rotate(60, ${xScale(i)}, ${SVG_HEIGHT - margin.bottom + 20})`}
                         className="text-xs fill-gray-600"
                     >
                         {lead.name.split(' ')[0]}

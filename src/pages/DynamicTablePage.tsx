@@ -15,22 +15,20 @@ const DynamicTablePage: React.FC = () => {
     const [data, setData] = useState<DataType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    // Global search state
+    // Global search
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Sorting state (if needed by your Table component; adjust as required)
     const [sortBy, setSortBy] = useState<{ accessor: keyof DataType; order: 'asc' | 'desc' } | undefined>(undefined);
 
-    // (Optional) Column search queries – you can extend the logic in your Table.tsx
     const [columnSearchQueries, setColumnSearchQueries] = useState<{ [key: string]: string }>({});
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
     const rowsPerPage = 10;
 
-    // Fetch the dynamic data from public/data/complex.json on mount
+    // Fetch the dynamic data
     useEffect(() => {
-        fetch('/data/complex.json')
+        fetch('/data/leads.json')
             .then((res) => res.json())
             .then((jsonData) => {
                 // If the fetched data is not an array, wrap it in one
@@ -48,14 +46,14 @@ const DynamicTablePage: React.FC = () => {
         return <div className="p-4 text-center">Loading data...</div>;
     }
 
-    // Apply a global search filter on all fields
+    // global search filter
     const filteredData = data.filter(item => {
         return Object.values(item).some(val =>
             String(val).toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
 
-    // Pagination: determine total items and slice the filtered data
+    // Pagination
     const totalItems = filteredData.length;
     const startIdx = (currentPage - 1) * rowsPerPage;
     const paginatedData = filteredData.slice(startIdx, startIdx + rowsPerPage);
@@ -67,9 +65,9 @@ const DynamicTablePage: React.FC = () => {
                 <h1 className="text-3xl font-bold mb-4">Dynamic Table</h1>
                 {/* Global Search */}
                 <LeadsSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-                {/* Toolbar – currently without row selection functionality */}
+                {/* Toolbar */}
                 <LeadsToolbar
-                    selectedIds={[]}  // No rows are selected by default
+                    selectedIds={[]}  // yet to implement
                     onCreateClick={() => console.log("Create clicked")}
                     onEditClick={() => console.log("Edit clicked")}
                     onDeleteClick={() => console.log("Delete clicked")}
@@ -86,12 +84,11 @@ const DynamicTablePage: React.FC = () => {
                 <div className="overflow-x-auto">
                     <Table
                         data={paginatedData}
-                        sortBy={sortBy}
+                        sortBy={sortBy} //yet to implement
                         filterBy={() => true}
                         className="w-full"
                     />
                 </div>
-                {/* Pagination */}
                 <Pagination
                     currentPage={currentPage}
                     totalItems={totalItems}

@@ -89,9 +89,14 @@ const LeadsPage: React.FC = () => {
                 const data = (await response.json()) as Lead[];
                 setLeads(data);
                 setFilteredLeads(data);
-            } catch (err: any) {
-                console.error('Error fetching leads:', err);
-                setError(err.message || 'An error occurred while fetching leads.');
+            } catch (err) {
+                if (err instanceof Error) {
+                    console.error('Error fetching leads:', err);
+                    setError(err.message || 'An error occurred while fetching leads.');
+                } else {
+                    console.error('Unexpected error:', err);
+                    setError('An unexpected error occurred.');
+                }
             } finally {
                 setLoading(false);
             }
@@ -115,7 +120,7 @@ const LeadsPage: React.FC = () => {
             if (query) {
                 const lowerQuery = query.toLowerCase();
                 filtered = filtered.filter((lead) => {
-                    const value = (lead as any)[key];
+                    const value = lead[key as keyof Lead];
                     return value && value.toString().toLowerCase().includes(lowerQuery);
                 });
             }
@@ -142,8 +147,8 @@ const LeadsPage: React.FC = () => {
         }
         setSorting(newSorting);
         const sorted = [...filteredLeads].sort((a, b) => {
-            const aValue = (a as any)[key];
-            const bValue = (b as any)[key];
+            const aValue = a[key as keyof Lead];
+            const bValue = b[key as keyof Lead];
             if (typeof aValue === 'number' && typeof bValue === 'number') {
                 return newSorting.ascending ? aValue - bValue : bValue - aValue;
             }

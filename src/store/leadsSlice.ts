@@ -49,8 +49,11 @@ export const fetchLeads = createAsyncThunk('leads/fetchLeads', async (_, thunkAP
         }
         const data = await response.json();
         return data as Lead[];
-    } catch (error: any) {
-        return thunkAPI.rejectWithValue(error.message);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+        return thunkAPI.rejectWithValue('An unknown error occurred');
     }
 });
 

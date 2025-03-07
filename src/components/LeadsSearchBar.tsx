@@ -10,7 +10,7 @@ const LeadsSearchBar: React.FC<LeadsSearchBarProps> = ({ searchQuery, onSearchCh
     <div className="max-w-md mx-auto p-4">
       <input
         type="text"
-        placeholder="Search by name or company"
+        placeholder="Search by name or company for leads data only."
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         className="w-full p-3 border rounded-lg shadow-md focus:outline-none focus:border-blue-500"

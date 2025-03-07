@@ -1,8 +1,7 @@
-// src/components/Table.tsx
 import React, { useState } from 'react';
 import { useTable } from '../hooks/useTable';
 
-interface TableProps<T extends Record<string, any>> {
+interface TableProps<T extends Record<string, unknown>> {
   data: T[];
   sortBy?: { accessor: keyof T; order: 'asc' | 'desc' };
   filterBy?: (item: T) => boolean;
@@ -15,10 +14,9 @@ type ExpandedState = {
   };
 };
 
-//
 // Helpers for nested data and image rendering
-//
-const isChildTableField = (value: any): boolean => {
+
+const isChildTableField = (value: unknown): boolean => {
   return (
     Array.isArray(value) &&
     value.length > 0 &&
@@ -27,11 +25,11 @@ const isChildTableField = (value: any): boolean => {
   );
 };
 
-const isPlainObject = (value: any): boolean => {
-  return value && typeof value === 'object' && !Array.isArray(value);
+const isPlainObject = (value: unknown): boolean => {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 };
 
-const isImage = (value: any): boolean => {
+const isImage = (value: unknown): boolean => {
   if (typeof value === 'string') {
     if (/^data:image\/[a-zA-Z]+;base64,/.test(value)) return true;
     if (/^https?:\/\//.test(value) && /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(value))
@@ -41,17 +39,19 @@ const isImage = (value: any): boolean => {
   return false;
 };
 
-const getImageSrc = (src: string, key: string): string => {
-  if (key === 'profilePicture' && src.startsWith('public/')) {
+const getImageSrc = (src: string
+  // , key: string
+): string => {
+  if (
+    // key === 'profilePicture' && 
+    src.startsWith('public/')) {
     return src.replace(/^public/, '');
   }
   return src;
 };
 
-//
 // Refined Resizable Table Component
-//
-function Table<T extends Record<string, any>>({
+function Table<T extends Record<string, unknown>>({
   data,
   sortBy,
   filterBy,
@@ -104,7 +104,7 @@ function Table<T extends Record<string, any>>({
 
   return (
     <div className="flex justify-center items-center w-full py-8">
-      {/* Container with horizontal scrolling */}
+      {/* horizontal scrolling */}
       <div className="overflow-x-auto">
         <table className={`border-collapse ${className}`} style={{ minWidth: '100%' }}>
           <thead className="bg-gray-200">
@@ -186,7 +186,7 @@ function Table<T extends Record<string, any>>({
                     );
 
                     if (isImage(cellValue)) {
-                      const src = getImageSrc(cellValue, key);
+                      const src = getImageSrc(cellValue as string);
                       return renderCell(
                         <img
                           src={src}

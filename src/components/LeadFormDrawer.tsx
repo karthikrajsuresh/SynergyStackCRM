@@ -75,7 +75,7 @@ const LeadFormDrawer: React.FC<LeadFormDrawerProps> = ({
                 <div>
                     <label className="block text-lg font-semibold mb-1">Phone</label>
                     <input
-                        type="text"
+                        type="number"
                         value={lead.contactInfo.phone}
                         onChange={(e) =>
                             onChange({ ...lead, contactInfo: { ...lead.contactInfo, phone: e.target.value } })
@@ -84,7 +84,6 @@ const LeadFormDrawer: React.FC<LeadFormDrawerProps> = ({
                         required
                     />
                 </div>
-                {/* Additional Fields */}
                 <div>
                     <label className="block text-lg font-semibold mb-1">Industry</label>
                     <input
